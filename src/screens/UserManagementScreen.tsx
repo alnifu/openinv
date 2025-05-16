@@ -1,0 +1,1 @@
+/*Bale, nakaflatlist, itsura nito parang katulad ng Inventory Screen, may Searching at Sorting, as for details, mag-iisip pa ako*/

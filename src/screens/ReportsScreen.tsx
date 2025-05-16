@@ -1,0 +1,1 @@
+/*Blanko Muna ito, pero ang plano muna natin dito, nandito yung low stocks, sales report(it will list down everything sold, most sold item), pa help na lang kung ano pwede ilagay kasi need ng graphs*/

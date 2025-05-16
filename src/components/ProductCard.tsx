@@ -1,0 +1,1 @@
+/*Dito makikita ang details ng product, though make sure it ain't editable. Details like picture, name, barcode(or bar number or whatever the f is that), price, quantity, or any relevant details, might be vague cause that's only I could think of right now.*/

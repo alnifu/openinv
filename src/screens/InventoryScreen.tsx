@@ -1,0 +1,2 @@
+/*Gagamit tayo dine ng flatlist, dapat may add product, searching, sorting. Tas ang fields ay Product Picture, Name, Available Quantity, 
+pag pindot niyo dapat may makita tayong, editable notes, save product, cancel button, remove product.*/

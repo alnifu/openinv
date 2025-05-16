@@ -1,0 +1,1 @@
+/*Katulad lang din ng Inventory Screen, pero napakaconvenient ang pag modify ng quantity ng product.*/
