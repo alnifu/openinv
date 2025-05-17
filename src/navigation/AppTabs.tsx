@@ -6,6 +6,7 @@ import InventoryScreen from "../screens/InventoryScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ReportsScreen from "../screens/ReportsScreen";
 import SalesScreen from "../screens/SalesScreen";
+import ScannerScreen from "../screens/ScannerScreen";
 import StockScreen from "../screens/StockScreen";
 import { Ionicons } from "@expo/vector-icons";
 import { Appbar, Menu } from "react-native-paper";
@@ -37,7 +38,7 @@ const CustomHeader = () => {
         navigation.navigate("Profile");
         break;
       case "users":
-        // navigate to user management if applicable
+        navigation.navigate("UserManagement");
         break;
       case "logout":
         // handle logout logic
@@ -101,6 +102,7 @@ const AppTabs = () => {
       })}
     >
       <Tab.Screen name="Inventory" component={InventoryScreen} />
+      <Tab.Screen name="Scanner" component={ScannerScreen} />
       {isAdmin && <Tab.Screen name="Reports" component={ReportsScreen} />}
       <Tab.Screen name="Sales" component={SalesScreen} />
       <Tab.Screen name="Stock" component={StockScreen} />

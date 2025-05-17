@@ -4,11 +4,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
 import AppTabs from './AppTabs';
 import ProfileScreen from '../screens/ProfileScreen';
+import UserManagementScreen from '../screens/UserManagementScreen'
 
 type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   Profile: undefined;
+  UserManagement: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -32,6 +34,8 @@ export default function RootNavigator() {
           <>
             <Stack.Screen name="Home" component={AppTabs} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="UserManagement" component={UserManagementScreen} />
+            
           </>
         )}
       </Stack.Navigator>
