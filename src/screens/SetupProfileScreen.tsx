@@ -82,8 +82,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
   },
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> 0ef43a00c4029f4ad7cba9094da2c8a7f0f45c09
