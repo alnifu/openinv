@@ -5,15 +5,15 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState(''); // still exists but not required
 
   const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Missing Fields', 'Please enter both email and password.');
+    if (!email.includes('@gmail.com')) {
+      Alert.alert('Invalid Email', 'Please use a valid @gmail.com email address.');
       return;
     }
 
-    // TODO: Replace with real auth logic
+    // TODO: Add real auth later
     Alert.alert('Login Successful', `Welcome, ${email}!`);
   };
 
@@ -32,7 +32,7 @@ const LoginScreen = () => {
 
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Password (optional)"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
