@@ -1,1 +1,0 @@
-/*Not sure about sa profile picture... plano muna yun, tas pwede iedit ang First Name and Last Name If owner, below may User Management Button pag pindot, reset navigation then head to User Management Screen.*/
