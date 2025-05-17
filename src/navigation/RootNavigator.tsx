@@ -1,1 +1,19 @@
-/*Bale ito yung main navigation, lagay niyo yung navigation for LoginScreen and SetupProfileScreen(For new users)*/
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from '../screens/LoginScreen';
+import InventoryScreen from '../screens/InventoryScreen';
+// import other screens as needed
+
+const Stack = createNativeStackNavigator();
+
+const RootNavigator = () => {
+  return (
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Inventory" component={InventoryScreen} />
+      {/* Add other screens here */}
+    </Stack.Navigator>
+  );
+};
+
+export default RootNavigator;
