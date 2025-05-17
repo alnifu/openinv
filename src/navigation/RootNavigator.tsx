@@ -1,11 +1,10 @@
 // src/navigation/RootNavigator.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
 import AppTabs from './AppTabs';
 import ProfileScreen from '../screens/ProfileScreen';
-import { useAuth } from '../context/AuthContext';
 
 type RootStackParamList = {
   Login: undefined;
@@ -16,20 +15,22 @@ type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
-  const { user } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
-    <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!user ? (
-          <Stack.Screen name="Login" component={LoginScreen} />
+        {!isLoggedIn ? (
+          <Stack.Screen name="Login">
+            {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
+          </Stack.Screen>
         ) : (
           <>
-            <Stack.Screen name="Home" component={AppTabs} />
+            <Stack.Screen name="Home">
+              {(props) => <AppTabs {...props} setIsLoggedIn={setIsLoggedIn} />}
+            </Stack.Screen>
             <Stack.Screen name="Profile" component={ProfileScreen} />
           </>
         )}
       </Stack.Navigator>
-    </NavigationContainer>
   );
 }

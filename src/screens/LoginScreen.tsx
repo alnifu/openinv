@@ -1,3 +1,4 @@
+// src/screens/LoginScreen.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -9,24 +10,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-type RootStackParamList = {
-  Login: undefined;
-  Inventory: undefined;
-};
-
-// Extend navigation props with your custom onLogin prop
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'> & {
-  onLogin: () => void;
-};
-
-export default function LoginScreen({ navigation, onLogin }: Props) {
+export default function LoginScreen({ setIsLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Missing Fields', 'Please enter both email and password.');
       return;
@@ -36,14 +25,7 @@ export default function LoginScreen({ navigation, onLogin }: Props) {
 
     setTimeout(() => {
       setLoading(false);
-      Alert.alert('Login Successful', `Welcome, ${email}!`, [
-        {
-          text: 'Continue',
-          onPress: () => {
-            onLogin();
-          },
-        },
-      ]);
+      setIsLoggedIn(true); // Update state to go to Home
     }, 1500);
   };
 
