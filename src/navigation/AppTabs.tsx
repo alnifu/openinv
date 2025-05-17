@@ -1,57 +1,109 @@
 // src/navigation/AppTabs.tsx
-
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import InventoryScreen from '../screens/InventoryScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import ReportsScreen from '../screens/ReportsScreen';
-import SalesScreen from '../screens/SalesScreen';
-import StockScreen from '../screens/StockScreen';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { View } from "react-native";
+import InventoryScreen from "../screens/InventoryScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import ReportsScreen from "../screens/ReportsScreen";
+import SalesScreen from "../screens/SalesScreen";
+import StockScreen from "../screens/StockScreen";
+import { Ionicons } from "@expo/vector-icons";
+import { Appbar, Menu } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
+
+const isAdmin = true;
+
+const CustomHeader = () => {
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [iconColor, setIconColor] = useState("#000");
+  const navigation = useNavigation();
+
+  const openMenu = () => {
+    setMenuVisible(true);
+    setIconColor("#2f95dc");
+  };
+
+  const closeMenu = () => {
+    setMenuVisible(false);
+    setIconColor("#000");
+  };
+
+  const handleMenuPress = (action: string) => {
+    closeMenu();
+    switch (action) {
+      case "profile":
+        navigation.navigate("Profile");
+        break;
+      case "users":
+        // navigate to user management if applicable
+        break;
+      case "logout":
+        // handle logout logic
+        break;
+    }
+  };
+
+  return (
+    <Appbar.Header>
+      <Appbar.Content title="" />
+      <Menu
+        visible={menuVisible}
+        onDismiss={closeMenu}
+        anchor={
+          <Appbar.Action
+            icon="cog-outline"
+            color={iconColor}
+            onPress={openMenu}
+          />
+        }
+      >
+        <Menu.Item onPress={() => handleMenuPress("profile")} title="Profile" />
+        <Menu.Item
+          onPress={() => handleMenuPress("users")}
+          title="User Management"
+        />
+        <Menu.Item onPress={() => handleMenuPress("logout")} title="Log Out" />
+      </Menu>
+    </Appbar.Header>
+  );
+};
 
 const AppTabs = () => {
   return (
     <Tab.Navigator
       initialRouteName="Inventory"
       screenOptions={({ route }) => ({
-        headerShown: true,
+        header: () => <CustomHeader />,
         tabBarIcon: ({ color, size }) => {
-          let iconName = '';
+          let iconName = "";
 
           switch (route.name) {
-            case 'Inventory':
-              iconName = 'list-outline'; 
+            case "Inventory":
+              iconName = "list-outline";
               break;
-            case 'Profile':
-              iconName = 'person-circle-outline'; 
+            case "Reports":
+              iconName = "analytics-outline";
               break;
-            case 'Reports':
-              iconName = 'analytics-outline'; 
+            case "Sales":
+              iconName = "card-outline";
               break;
-            case 'Sales':
-              iconName = 'card-outline'; 
-              break;
-            case 'Stock':
-              iconName = 'cube-outline';
+            case "Stock":
+              iconName = "cube-outline";
               break;
           }
-          
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#2f95dc',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: "#2f95dc",
+        tabBarInactiveTintColor: "gray",
       })}
     >
-    
-      <Tab.Screen name="Inventory" component={InventoryScreen} options={{ tabBarLabel: 'Inventory' }} />
-<Tab.Screen name="Reports" component={ReportsScreen} options={{ tabBarLabel: 'Reports' }} />
-<Tab.Screen name="Sales" component={SalesScreen} options={{ tabBarLabel: 'Sales' }} />
-<Tab.Screen name="Stock" component={StockScreen} options={{ tabBarLabel: 'Stock' }} />
-{/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
-
+      <Tab.Screen name="Inventory" component={InventoryScreen} />
+      {isAdmin && <Tab.Screen name="Reports" component={ReportsScreen} />}
+      <Tab.Screen name="Sales" component={SalesScreen} />
+      <Tab.Screen name="Stock" component={StockScreen} />
     </Tab.Navigator>
   );
 };
