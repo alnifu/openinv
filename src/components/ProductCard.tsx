@@ -4,9 +4,11 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 
 interface Product {
-  id: string;
+  id?: string;
   name: string;
-  stock?: number;
+  price: string;
+  category: string;
+  quantity: string;
 }
 
 interface Props {
