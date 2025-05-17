@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import InventoryScreen from '../screens/InventoryScreen';
 import ReportsScreen from '../screens/ReportsScreen';
 import SalesScreen from '../screens/SalesScreen';
+import ScannerScreen from '../screens/ScannerScreen';
 import StockScreen from '../screens/StockScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { Appbar, Menu } from 'react-native-paper';
@@ -12,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 const isAdmin = true;
 
-const CustomHeader = ({ setIsLoggedIn }) => {
+const CustomHeader = ({ setIsLoggedIn, title }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [iconColor, setIconColor] = useState('#000');
   const navigation = useNavigation();
@@ -41,7 +42,7 @@ const CustomHeader = ({ setIsLoggedIn }) => {
 
   return (
     <Appbar.Header>
-      <Appbar.Content title="" />
+      <Appbar.Content title={title} />
       <Menu
         visible={menuVisible}
         onDismiss={closeMenu}
@@ -68,7 +69,7 @@ const AppTabs = ({ setIsLoggedIn }) => {
     <Tab.Navigator
       initialRouteName="Inventory"
       screenOptions={({ route }) => ({
-        header: () => <CustomHeader setIsLoggedIn={setIsLoggedIn} />,
+        header: () => <CustomHeader setIsLoggedIn={setIsLoggedIn} title={route.name} />,
         tabBarIcon: ({ color, size }) => {
           let iconName = '';
           switch (route.name) {
@@ -81,6 +82,9 @@ const AppTabs = ({ setIsLoggedIn }) => {
             case 'Sales':
               iconName = 'card-outline';
               break;
+            case 'Scanner':
+              iconName = 'qr-code-outline';
+              break;
             case 'Stock':
               iconName = 'cube-outline';
               break;
@@ -92,11 +96,14 @@ const AppTabs = ({ setIsLoggedIn }) => {
       })}
     >
       <Tab.Screen name="Inventory" component={InventoryScreen} />
+      <Tab.Screen name="Scanner" component={ScannerScreen} />
+
       {isAdmin && <Tab.Screen name="Reports" component={ReportsScreen} />}
       <Tab.Screen name="Sales" component={SalesScreen} />
       <Tab.Screen name="Stock" component={StockScreen} />
     </Tab.Navigator>
   );
 };
+
 
 export default AppTabs;
