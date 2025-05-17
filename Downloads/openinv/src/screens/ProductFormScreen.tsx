@@ -1,0 +1,1 @@
+/*Ito yung Form na May Add or Edit Product as details na pwede ilagay... not sure Siguro Sapat na ang Name, Price, category Stocks.*/
