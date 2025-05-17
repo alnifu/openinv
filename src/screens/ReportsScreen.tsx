@@ -1,58 +1,30 @@
-// src/screens/SetupProfileScreen.tsx
+// src/screens/ReportsScreen.tsx
 
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-const SetupProfileScreen = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [contact, setContact] = useState('');
-
-  const handleSubmit = () => {
-    if (!username || !email || !contact) {
-      Alert.alert('Error', 'Please fill out all fields');
-      return;
-    }
-    console.log('Profile Setup:', { username, email, contact });
-    Alert.alert('Profile Set', 'Profile setup completed!');
-    setUsername('');
-    setEmail('');
-    setContact('');
-  };
-
+const ReportsScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Set Up Profile</Text>
+      <Text style={styles.heading}>Reports</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contact Number"
-        keyboardType="phone-pad"
-        value={contact}
-        onChangeText={setContact}
-      />
-
-      <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-        <Text style={styles.btnText}>Submit</Text>
-      </TouchableOpacity>
+      {/* Mock Placeholder Graph */}
+      <View style={styles.graphContainer}>
+        <Text style={styles.graphTitle}>Sales Overview</Text>
+        <View style={styles.graph}>
+          <View style={[styles.bar, { height: 50, backgroundColor: '#4caf50' }]} />
+          <View style={[styles.bar, { height: 80, backgroundColor: '#2196f3' }]} />
+          <View style={[styles.bar, { height: 30, backgroundColor: '#ff9800' }]} />
+          <View style={[styles.bar, { height: 70, backgroundColor: '#f44336' }]} />
+          <View style={[styles.bar, { height: 60, backgroundColor: '#9c27b0' }]} />
+        </View>
+        <Text style={styles.graphNote}>*This is a placeholder graph</Text>
+      </View>
     </View>
   );
 };
 
-export default SetupProfileScreen;
+export default ReportsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -65,21 +37,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  input: {
+  graphContainer: {
+    padding: 16,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    borderRadius: 12,
+    backgroundColor: '#f9f9f9',
   },
-  submitBtn: {
-    backgroundColor: '#28a745',
-    padding: 12,
-    borderRadius: 8,
-  },
-  btnText: {
-    color: '#fff',
-    textAlign: 'center',
+  graphTitle: {
+    fontSize: 18,
     fontWeight: '600',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  graph: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    height: 100,
+    marginBottom: 10,
+  },
+  bar: {
+    width: 30,
+    borderRadius: 4,
+  },
+  graphNote: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
   },
 });

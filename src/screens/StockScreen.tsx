@@ -1,8 +1,7 @@
 // src/screens/StockScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Alert } from 'react-native';
-import ProductCard from '../components/ProductCard';
+import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
 const StockScreen = () => {
   const [products, setProducts] = useState([
@@ -35,6 +34,28 @@ const StockScreen = () => {
     );
   };
 
+  const renderItem = ({ item }: { item: { id: string; name: string; stock: number } }) => (
+    <View style={styles.card}>
+      <Text style={styles.name}>{item.name}</Text>
+
+      <TextInput
+        style={styles.quantityInput}
+        keyboardType="numeric"
+        value={item.stock.toString()}
+        onChangeText={(val) => handleChangeQuantity(item.id, val)}
+      />
+
+      <View style={styles.buttonGroup}>
+        <TouchableOpacity onPress={() => handleIncrease(item.id)} style={styles.btn}>
+          <Text style={styles.btnText}>+</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleDecrease(item.id)} style={styles.btn}>
+          <Text style={styles.btnText}>−</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Stock Control</Text>
@@ -42,16 +63,7 @@ const StockScreen = () => {
       <FlatList
         data={products}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <ProductCard
-            product={item}
-            showStockControls
-            quantity={item.stock || 0}
-            onIncrease={() => handleIncrease(item.id)}
-            onDecrease={() => handleDecrease(item.id)}
-            onChangeQuantity={(val) => handleChangeQuantity(item.id, val)}
-          />
-        )}
+        renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
       />
     </View>
@@ -74,5 +86,43 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 20,
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    padding: 12,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 10,
+  },
+  name: {
+    flex: 1.5,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  quantityInput: {
+    flex: 1,
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    textAlign: 'center',
+    borderRadius: 6,
+    marginHorizontal: 8,
+    backgroundColor: '#fff',
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+  },
+  btn: {
+    backgroundColor: '#007bff',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginLeft: 4,
+  },
+  btnText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
