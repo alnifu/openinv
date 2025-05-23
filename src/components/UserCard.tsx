@@ -1,8 +1,7 @@
 // src/components/UserCard.tsx
-
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons'; // or any other icon library
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface UserCardProps {
   user: {
@@ -19,7 +18,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit }) => {
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Text style={styles.name}>{user.name}</Text>
-        <TouchableOpacity onPress={onEdit} style={styles.editButton}>
+        <TouchableOpacity onPress={onEdit} style={styles.editButton} testID="edit-button">
           <MaterialIcons name="edit" size={20} color="#555" />
         </TouchableOpacity>
       </View>
@@ -31,6 +30,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit }) => {
     </View>
   );
 };
+
 
 export default UserCard;
 
