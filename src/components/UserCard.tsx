@@ -1,20 +1,33 @@
 // src/components/UserCard.tsx
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons'; // or any other icon library
 
-type UserCardProps = {
-  name: string;
-  email: string;
-  role?: string; // Optional: user role like "owner", "staff"
-};
+interface UserCardProps {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
+  onEdit: () => void;
+}
 
-const UserCard: React.FC<UserCardProps> = ({ name, email, role }) => {
+const UserCard: React.FC<UserCardProps> = ({ user, onEdit }) => {
   return (
     <View style={styles.card}>
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.email}>{email}</Text>
-      {role && <Text style={styles.role}>Role: {role}</Text>}
+      <View style={styles.cardHeader}>
+        <Text style={styles.name}>{user.name}</Text>
+        <TouchableOpacity onPress={onEdit} style={styles.editButton}>
+          <MaterialIcons name="edit" size={20} color="#555" />
+        </TouchableOpacity>
+      </View>
+      
+      <Text style={styles.email}>{user.email}</Text>
+      <View style={styles.roleContainer}>
+        <Text style={styles.role}>Role: {user.role}</Text>
+      </View>
     </View>
   );
 };
@@ -26,26 +39,41 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
     marginVertical: 8,
-    marginHorizontal: 12,
     borderRadius: 8,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
     elevation: 3, // for Android shadow
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
   },
   name: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 4,
+    flex: 1,
   },
   email: {
     fontSize: 14,
     color: '#555',
+    marginBottom: 4,
+  },
+  roleContainer: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
   },
   role: {
-    marginTop: 6,
-    fontSize: 12,
-    fontStyle: 'italic',
-    color: '#888',
+    fontSize: 14,
+    color: '#666',
+  },
+  editButton: {
+    padding: 4,
+    marginLeft: 8,
   },
 });

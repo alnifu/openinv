@@ -13,7 +13,7 @@ export default function InventoryScreen() {
 
   const handleAddProduct = () => {
     Alert.alert('Add Product', 'Redirect to Product Form');
-    // TODO: navigation.navigate('ProductFormScreen', { mode: 'add' });
+    
   };
 
   const handleView = (product: any) => {
