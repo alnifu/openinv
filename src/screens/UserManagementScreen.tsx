@@ -1,8 +1,8 @@
 // src/screens/UserManagementScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import UserCard from '../components/UserCard';
+import UserFormModal from '../components/UserFormModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface User {
@@ -12,61 +12,96 @@ interface User {
   role: string;
 }
 
-// Mock function to simulate getting users from AsyncStorage
-const getUsersFromStorage = async (): Promise<User[]> => {
-  // In a real app, you would do:
-  // const usersJson = await AsyncStorage.getItem('users');
-  // return usersJson ? JSON.parse(usersJson) : [];
-  
-  // For now, we'll simulate a delay and return dummy data
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  return [
-    { id: '1', name: 'Juan Dela Cruz', email: 'juan@email.com', role: 'Staff' },
-    { id: '2', name: 'Maria Santos', email: 'maria@email.com', role: 'Manager' },
-  ];
-};
-
 const UserManagementScreen = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const storedUsers = await getUsersFromStorage();
-        setUsers(storedUsers);
-      } catch (err) {
-        setError('Failed to load users');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  const handleEditUser = (user: User) => {
-    console.log('Edit user:', user);
-    // navigate to user form or show modal here
+  // Get users from storage
+  const getUsersFromStorage = async (): Promise<User[]> => {
+    try {
+      const usersJson = await AsyncStorage.getItem('users');
+      if (usersJson) return JSON.parse(usersJson);
+      
+      // Default users if none exist
+      const defaultUsers = [
+        { id: '1', name: 'Juan Dela Cruz', email: 'juan@email.com', role: 'Staff' },
+        { id: '2', name: 'Maria Santos', email: 'maria@email.com', role: 'Amin' },
+      ];
+      await AsyncStorage.setItem('users', JSON.stringify(defaultUsers));
+      return defaultUsers;
+    } catch (error) {
+      throw new Error('Failed to load users');
+    }
   };
 
-  const handleAddUser = () => {
-    console.log('Add new user');
-    // navigate to user form or show modal here
+  // Save users to storage
+  const saveUsersToStorage = async (usersList: User[]) => {
+    try {
+      await AsyncStorage.setItem('users', JSON.stringify(usersList));
+    } catch (error) {
+      throw new Error('Failed to save users');
+    }
   };
 
-  const refreshUsers = async () => {
+  // Load users
+  const loadUsers = async () => {
     setLoading(true);
     try {
       const storedUsers = await getUsersFromStorage();
       setUsers(storedUsers);
+      setError(null);
     } catch (err) {
-      setError('Failed to refresh users');
-      console.error(err);
+      setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  // Handle edit user
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setIsModalVisible(true);
+  };
+
+  // Handle add user
+  const handleAddUser = () => {
+    setSelectedUser({
+      id: Math.random().toString(36).substr(2, 9), // Generate random ID
+      name: '',
+      email: '',
+      role: '',
+    });
+    setIsModalVisible(true);
+  };
+
+  // Handle save user
+  const handleSaveUser = async (updatedUser: Omit<User, 'id'>) => {
+    if (!selectedUser) return;
+    
+    try {
+      let updatedUsers;
+      if (users.some(user => user.id === selectedUser.id)) {
+        // Update existing user
+        updatedUsers = users.map(user =>
+          user.id === selectedUser.id ? { ...updatedUser, id: selectedUser.id } : user
+        );
+      } else {
+        // Add new user
+        updatedUsers = [...users, { ...updatedUser, id: selectedUser.id }];
+      }
+      
+      await saveUsersToStorage(updatedUsers);
+      setUsers(updatedUsers);
+      setIsModalVisible(false);
+    } catch (err) {
+      setError('Failed to save user');
     }
   };
 
@@ -82,7 +117,7 @@ const UserManagementScreen = () => {
     return (
       <View style={[styles.container, styles.center]}>
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity onPress={refreshUsers} style={styles.retryButton}>
+        <TouchableOpacity onPress={loadUsers} style={styles.retryButton}>
           <Text style={styles.retryButtonText}>Retry</Text>
         </TouchableOpacity>
       </View>
@@ -104,12 +139,19 @@ const UserManagementScreen = () => {
         )}
         contentContainerStyle={{ paddingBottom: 40 }}
         refreshing={loading}
-        onRefresh={refreshUsers}
+        onRefresh={loadUsers}
       />
 
       <TouchableOpacity style={styles.addBtn} onPress={handleAddUser}>
         <Text style={styles.addBtnText}>+ Add User</Text>
       </TouchableOpacity>
+
+      <UserFormModal
+        visible={isModalVisible}
+        user={selectedUser || { id: '', name: '', email: '', role: '' }}
+        onSave={handleSaveUser}
+        onCancel={() => setIsModalVisible(false)}
+      />
     </View>
   );
 };
