@@ -34,6 +34,9 @@ const CustomHeader = ({ setIsLoggedIn, title }) => {
       case 'profile':
         navigation.navigate('Profile');
         break;
+        case 'users':
+        navigation.navigate('User');
+        break;
       case 'logout':
         setIsLoggedIn(false);
         break;
