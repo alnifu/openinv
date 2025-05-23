@@ -191,7 +191,8 @@ export default function ProductFormScreen({ route, navigation }: ProductFormScre
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}
+    contentContainerStyle={{ paddingBottom: 80 }}>
       <View style={styles.form}>
         {/* Image Section */}
         <View style={styles.imageSection}>

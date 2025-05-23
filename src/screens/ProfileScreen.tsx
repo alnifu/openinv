@@ -70,9 +70,9 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Profile</Text>
-        <TouchableOpacity onPress={handleEditPress}>
-          <Text style={styles.editButton}>{isEditing ? 'Save' : 'Edit'}</Text>
+
+        <TouchableOpacity style={styles.editButton} onPress={handleEditPress}>
+          <Text style={styles.buttonText}>{isEditing ? 'Save' : 'Edit'}</Text>
         </TouchableOpacity>
       </View>
 
@@ -136,12 +136,12 @@ const ProfileScreen = () => {
           <Text style={styles.value}>{user.role}</Text>
         </View>
       </View>
-
       {isEditing && (
         <TouchableOpacity onPress={handleCancelEdit} style={styles.cancelButton}>
-          <Text style={styles.cancelButtonText}>Cancel</Text>
+          <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       )}
+      
     </View>
   );
 };
@@ -163,8 +163,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   editButton: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 10,
+    borderRadius: 6,
+    flex: 1,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  cancelButton: {
+    backgroundColor: "#ff3b30",
+    paddingVertical: 10,
+    borderRadius: 6,
+    marginTop: 40,
+    alignItems: "center",
+  },
+  cancelButtonText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#007AFF',
   },
   profileSection: {
     alignItems: 'center',
@@ -233,14 +252,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
     paddingVertical: 5,
   },
-  cancelButton: {
-    marginTop: 20,
-    alignSelf: 'center',
-  },
-  cancelButtonText: {
-    color: '#ff3b30',
-    fontSize: 16,
-  },
+  
 });
 
 export default ProfileScreen;

@@ -35,7 +35,7 @@ const UserFormModal: React.FC<UserFormModalProps> = ({ visible, user, onSave, on
   };
 
   return (
-     <Modal visible={visible} animationType="slide" transparent>
+     <Modal visible={visible} transparent>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>

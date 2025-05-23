@@ -28,7 +28,7 @@ const UserManagementScreen = () => {
       // Default users if none exist
       const defaultUsers = [
         { id: '1', name: 'Juan Dela Cruz', email: 'juan@email.com', role: 'Staff' },
-        { id: '2', name: 'Maria Santos', email: 'maria@email.com', role: 'Amin' },
+        { id: '2', name: 'Maria Santos', email: 'maria@email.com', role: 'Admin' },
       ];
       await AsyncStorage.setItem('users', JSON.stringify(defaultUsers));
       return defaultUsers;
@@ -126,7 +126,6 @@ const UserManagementScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>User Management</Text>
 
       <FlatList
         data={users}
@@ -138,6 +137,8 @@ const UserManagementScreen = () => {
           />
         )}
         contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+  showsHorizontalScrollIndicator={false}
         refreshing={loading}
         onRefresh={loadUsers}
       />
@@ -174,18 +175,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   addBtn: {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-    backgroundColor: '#28a745',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    backgroundColor: "#28a745",
+    paddingVertical: 16,
     borderRadius: 8,
+    alignItems: "center",
+    marginTop: 12,
+    marginBottom: 40,
   },
   addBtnText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#fff",
     fontSize: 16,
+    fontWeight: "600",
   },
   errorText: {
     color: 'red',

@@ -34,15 +34,10 @@ export default function SalesViewScreen({ route, navigation }: SalesViewScreenPr
         month: 'long',
         day: 'numeric',
       }),
-      time: date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      }),
     };
   };
 
-  const { date, time } = formatDate(soldItem.dateSold);
+  const { date } = formatDate(soldItem.dateSold);
 
   return (
     <ScrollView style={styles.container}>
@@ -75,11 +70,11 @@ export default function SalesViewScreen({ route, navigation }: SalesViewScreenPr
             <Text style={styles.label}>Date Sold:</Text>
             <Text style={styles.value}>{date}</Text>
           </View>
-
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Time Sold:</Text>
-            <Text style={styles.value}>{time}</Text>
+          <View style={styles.endRow}>
+            <Text style={styles.label}>Total Sales:</Text>
+            <Text style={styles.value}>{soldItem.priceSold}</Text>
           </View>
+          
         </View>
 
         {/* Action Button */}
@@ -125,6 +120,10 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+  },
+  endRow: {
+    marginBottom: 16,
+    paddingBottom: 12,
   },
   label: {
     fontSize: 14,

@@ -19,6 +19,7 @@ export interface SoldItem {
   category: string;
   quantitySold: number;
   dateSold: string;
+  priceSold: number;
 }
 
 const ITEMS_KEY = '@inventory_items';
@@ -91,14 +92,31 @@ export const saveSoldItems = async (soldItems: SoldItem[]): Promise<void> => {
 };
 
 export const getSoldItems = async (): Promise<SoldItem[]> => {
-  try {
-    const soldItemsJson = await AsyncStorage.getItem(SOLD_ITEMS_KEY);
-    return soldItemsJson ? JSON.parse(soldItemsJson) : [];
-  } catch (error) {
-    console.error('Error getting sold items:', error);
-    return [];
-  }
-};
+    try {
+      const soldItemsJson = await AsyncStorage.getItem(SOLD_ITEMS_KEY);
+      const parsed: SoldItem[] = soldItemsJson ? JSON.parse(soldItemsJson) : [];
+  
+      // Remove any that are missing priceSold or quantitySold
+      const cleaned = parsed.filter(
+        item =>
+          item.itemId &&
+          item.quantitySold != null &&
+          typeof item.priceSold === 'number' &&
+          !isNaN(item.priceSold)
+      );
+  
+      // If cleanup removed anything, save it
+      if (cleaned.length !== parsed.length) {
+        await saveSoldItems(cleaned);
+      }
+  
+      return cleaned;
+    } catch (error) {
+      console.error('Error getting sold items:', error);
+      return [];
+    }
+  };
+  
 
 export const addSoldItem = async (soldItem: SoldItem): Promise<void> => {
   try {
@@ -158,6 +176,7 @@ export const sellItem = async (itemId: string, quantityToSell: number): Promise<
       category: item.category,
       quantitySold: quantityToSell,
       dateSold: new Date().toISOString(),
+      priceSold: item.sellingPrice, // ✅ Add this line
     };
     
     await addSoldItem(soldItem);

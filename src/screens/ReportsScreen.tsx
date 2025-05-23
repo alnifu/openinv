@@ -1,201 +1,182 @@
 // src/screens/ReportsScreen.tsx
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  FlatList,
+} from "react-native";
+import { getReportData } from "../utils/reportHelpers";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ReportsScreen = () => {
-  // Chart dimensions
-  const chartWidth = Dimensions.get('window').width - 40;
+  const [reportData, setReportData] = useState<any>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const fetchData = async () => {
+        const data = await getReportData();
+        if (isActive) {
+          setReportData(data);
+        }
+      };
+
+      fetchData();
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
+
+  if (!reportData) {
+    return <Text style={{ padding: 16 }}>Loading...</Text>;
+  }
+
+  const chartWidth = Dimensions.get("window").width - 40;
   const chartHeight = 200;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Supermarket Analytics</Text>
+    <ScrollView
+      style={styles.scrollContainer}
+      contentContainerStyle={styles.scrollContent}
+    >
+      <View style={styles.container}>
+        <Text style={styles.heading}>Grocery Analytics</Text>
 
-      {/* 1. Sales Trend Line Chart */}
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Sales Trend (Last 7 Days)</Text>
-        <View style={[styles.chart, { height: chartHeight }]}>
-          {/* Placeholder for line chart */}
-          <View style={styles.lineChart}>
-            <View style={[styles.line, { height: '80%', left: '10%' }]} />
-            <View style={[styles.line, { height: '60%', left: '30%' }]} />
-            <View style={[styles.line, { height: '90%', left: '50%' }]} />
-            <View style={[styles.line, { height: '40%', left: '70%' }]} />
-            <View style={[styles.line, { height: '70%', left: '90%' }]} />
+        {/* 1. Weekly Sales Trend */}
+        <View style={styles.chartContainer}>
+          <Text style={styles.chartTitle}>Sales Trend (Last 7 Days)</Text>
+          <View style={styles.chart}>
+            {Object.entries(reportData.salesTrend).map(([date, value], idx) => (
+              <View
+                key={idx}
+                style={{ flexDirection: "row", marginVertical: 4 }}
+              >
+                <Text style={{ flex: 3 }}>{date}</Text>
+                <Text style={{ flex: 7 }}>₱{value.toFixed(2)}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* 2. Stock Levels */}
+        <View style={styles.chartContainer}>
+          <Text style={styles.chartTitle}>Current Stock Levels</Text>
+          <View style={styles.chart}>
+            {reportData.stockLevels.map((item: any) => (
+              <View
+                key={item.id}
+                style={{ flexDirection: "row", marginVertical: 4 }}
+              >
+                <Text style={{ flex: 3 }}>{item.itemName}</Text>
+                <Text style={{ flex: 7 }}>{item.quantity}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* 3. Category Distribution */}
+        <View style={styles.chartContainer}>
+          <Text style={styles.chartTitle}>Inventory by Category</Text>
+          <View style={styles.chart}>
+            {Object.entries(reportData.categoryDistribution).map(
+              ([cat, qty]) => (
+                <View
+                  key={cat}
+                  style={{ flexDirection: "row", marginVertical: 4 }}
+                >
+                  <Text style={{ flex: 3 }}>{cat}</Text>
+                  <Text style={{ flex: 7 }}>{qty}</Text>
+                </View>
+              )
+            )}
+          </View>
+        </View>
+
+        {/* 4. Top Selling Items */}
+        <View style={styles.chartContainer}>
+          <Text style={styles.chartTitle}>Top Selling Items</Text>
+          <View style={styles.chart}>
+            {reportData.topSelling.map(([item, qty]: any, index: number) => (
+              <View
+                key={index}
+                style={{ flexDirection: "row", marginVertical: 4 }}
+              >
+                <Text style={{ flex: 3 }}>{item}</Text>
+                <Text style={{ flex: 7 }}>{qty} sold</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* 5. Low Stock Items */}
+        <View style={styles.chartContainer}>
+          <Text style={styles.chartTitle}>Low Stock Items (≤5)</Text>
+          <View style={styles.chart}>
+            {reportData.lowStockItems.length === 0 ? (
+              <Text style={{ textAlign: "center" }}>
+                No items are low on stock.
+              </Text>
+            ) : (
+              reportData.lowStockItems.map((item: any) => (
+                <View
+                  key={item.id}
+                  style={{ flexDirection: "row", marginVertical: 4 }}
+                >
+                  <Text style={{ flex: 3 }}>{item.itemName}</Text>
+                  <Text style={{ flex: 7 }}>{item.quantity} left</Text>
+                </View>
+              ))
+            )}
           </View>
         </View>
       </View>
-
-      {/* 2. Stock Levels Bar Chart */}
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Current Stock Levels</Text>
-        <View style={[styles.chart, { height: chartHeight }]}>
-          <View style={styles.barChart}>
-            <View style={[styles.bar, { height: '30%', backgroundColor: '#4CAF50' }]} />
-            <View style={[styles.bar, { height: '60%', backgroundColor: '#2196F3' }]} />
-            <View style={[styles.bar, { height: '45%', backgroundColor: '#FF9800' }]} />
-            <View style={[styles.bar, { height: '80%', backgroundColor: '#F44336' }]} />
-            <View style={[styles.bar, { height: '25%', backgroundColor: '#9C27B0' }]} />
-          </View>
-        </View>
-      </View>
-
-      {/* 3. Category Distribution Pie Chart */}
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Inventory by Category</Text>
-        <View style={[styles.chart, { height: chartHeight }]}>
-          <View style={styles.pieChart}>
-            <View style={[styles.pieSlice, { backgroundColor: '#FF6384', transform: [{ rotate: '0deg' }] }]} />
-            <View style={[styles.pieSlice, { backgroundColor: '#36A2EB', transform: [{ rotate: '72deg' }] }]} />
-            <View style={[styles.pieSlice, { backgroundColor: '#FFCE56', transform: [{ rotate: '144deg' }] }]} />
-            <View style={[styles.pieSlice, { backgroundColor: '#4BC0C0', transform: [{ rotate: '216deg' }] }]} />
-            <View style={[styles.pieSlice, { backgroundColor: '#9966FF', transform: [{ rotate: '288deg' }] }]} />
-          </View>
-        </View>
-      </View>
-
-      {/* 4. Top Selling Items Horizontal Bar Chart */}
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Top Selling Items</Text>
-        <View style={[styles.chart, { height: 180 }]}>
-          <View style={styles.horizontalBarChart}>
-            <View style={[styles.hBar, { width: '70%', backgroundColor: '#FF6384' }]} />
-            <View style={[styles.hBar, { width: '85%', backgroundColor: '#36A2EB' }]} />
-            <View style={[styles.hBar, { width: '60%', backgroundColor: '#FFCE56' }]} />
-            <View style={[styles.hBar, { width: '45%', backgroundColor: '#4BC0C0' }]} />
-            <View style={[styles.hBar, { width: '30%', backgroundColor: '#9966FF' }]} />
-          </View>
-        </View>
-      </View>
-
-      {/* 5. Stock Movement Area Chart */}
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>Weekly Stock Movement</Text>
-        <View style={[styles.chart, { height: chartHeight }]}>
-          <View style={styles.areaChart}>
-            <View style={styles.areaFill} />
-            <View style={styles.areaLine} />
-          </View>
-        </View>
-      </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default ReportsScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  scrollContainer: {
     flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollContent: {
+    paddingBottom: 20,
+  },
+  container: {
     padding: 16,
-    backgroundColor: '#fff',
   },
   heading: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   chartContainer: {
     marginBottom: 20,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
     borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   chartTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
   },
   chart: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 8,
-  },
-  // Line Chart Styles
-  lineChart: {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderColor: '#ccc',
-  },
-  line: {
-    position: 'absolute',
-    bottom: 0,
-    width: 4,
-    backgroundColor: '#FF6384',
-  },
-  // Bar Chart Styles
-  barChart: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
-    width: '100%',
-    height: '100%',
-  },
-  bar: {
-    width: 30,
-    borderRadius: 4,
-  },
-  // Pie Chart Styles
-  pieChart: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  pieSlice: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    borderRadius: 75,
-    left: '50%',
-    top: 0,
-    transformOrigin: 'left center',
-  },
-  // Horizontal Bar Chart Styles
-  horizontalBarChart: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'space-between',
-  },
-  hBar: {
-    height: 20,
-    borderRadius: 4,
-    marginVertical: 4,
-  },
-  // Area Chart Styles
-  areaChart: {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderColor: '#ccc',
-  },
-  areaFill: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '80%',
-    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-  },
-  areaLine: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: 'rgba(75, 192, 192, 1)',
   },
 });
